@@ -9,7 +9,6 @@ gui.hide();
 
 // DOM elements
 const canvas = document.querySelector(".webgl");
-const spinner = document.querySelector("#spinner")
 
 // Scene
 const scene = new THREE.Scene();
@@ -17,23 +16,11 @@ const scene = new THREE.Scene();
 // Fog
 const fog = new THREE.Fog("#262837", 1, 23);
 scene.fog = fog;
-console.log(spinner)
+
 /**
  * Textures
  */
-const loadingManager = new THREE.LoadingManager(); 
-
-loadingManager.onStart = () => {
-  scene.visible = false
-}
-
-loadingManager.onLoad = () => {
-  scene.visible = true
-  // @ts-ignore
-  spinner.style.display = "none"
-}
-
-const textureLoader = new THREE.TextureLoader(loadingManager);
+const textureLoader = new THREE.TextureLoader();
 
 const doorColorTexture = textureLoader.load("/textures/door/color.jpg");
 const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg");
