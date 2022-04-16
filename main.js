@@ -5,21 +5,35 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 // Debug
 const gui = new dat.GUI();
+gui.hide();
 
-// Canvas
+// DOM elements
 const canvas = document.querySelector(".webgl");
+const spinner = document.querySelector("#spinner")
 
 // Scene
 const scene = new THREE.Scene();
 
 // Fog
-const fog = new THREE.Fog("#262837", 1, 15);
+const fog = new THREE.Fog("#262837", 1, 23);
 scene.fog = fog;
-
+console.log(spinner)
 /**
  * Textures
  */
-const textureLoader = new THREE.TextureLoader();
+const loadingManager = new THREE.LoadingManager(); 
+
+loadingManager.onStart = () => {
+  scene.visible = false
+}
+
+loadingManager.onLoad = () => {
+  scene.visible = true
+  // @ts-ignore
+  spinner.style.display = "none"
+}
+
+const textureLoader = new THREE.TextureLoader(loadingManager);
 
 const doorColorTexture = textureLoader.load("/textures/door/color.jpg");
 const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg");
@@ -187,12 +201,12 @@ scene.add(floor);
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight("#b9d5ff", 0.12);
+const ambientLight = new THREE.AmbientLight("#b9d5ff", 0.291);
 gui.add(ambientLight, "intensity").min(0).max(1).step(0.001);
 scene.add(ambientLight);
 
 // Directional light
-const moonLight = new THREE.DirectionalLight("#b9d5ff", 0.12);
+const moonLight = new THREE.DirectionalLight("#b9d5ff", 0.291);
 moonLight.castShadow = true;
 moonLight.shadow.mapSize.width = 256;
 moonLight.shadow.mapSize.height = 256;
@@ -217,21 +231,21 @@ house.add(doorLight);
 /**
  * Ghosts
  */
-const ghost1 = new THREE.PointLight("#ff00ff", 3, 3);
+const ghost1 = new THREE.PointLight("#c7c7c7", 3, 3);
 ghost1.castShadow = true;
 ghost1.shadow.mapSize.width = 256;
 ghost1.shadow.mapSize.height = 256;
 ghost1.shadow.camera.far = 7;
 scene.add(ghost1);
 
-const ghost2 = new THREE.PointLight("#00ffff", 3, 3);
+const ghost2 = new THREE.PointLight("#c7c7c7", 3, 3);
 ghost2.castShadow = true;
 ghost2.shadow.mapSize.width = 256;
 ghost2.shadow.mapSize.height = 256;
 ghost2.shadow.camera.far = 7;
 scene.add(ghost2);
 
-const ghost3 = new THREE.PointLight("#ff7800", 3, 3);
+const ghost3 = new THREE.PointLight("#c7c7c7", 3, 3);
 ghost3.castShadow = true;
 ghost3.shadow.mapSize.width = 256;
 ghost3.shadow.mapSize.height = 256;
@@ -261,6 +275,7 @@ camera.position.z = 5;
 scene.add(camera);
 
 // Controls
+// @ts-ignore
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
