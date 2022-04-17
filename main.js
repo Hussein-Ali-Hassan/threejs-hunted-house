@@ -1,4 +1,4 @@
-import "./style.css";
+// @ts-nocheck
 import * as THREE from "three";
 import * as dat from "dat.gui";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -8,7 +8,10 @@ const gui = new dat.GUI();
 gui.hide();
 
 // DOM elements
-const canvas = document.querySelector(".webgl");
+const container = document.querySelector(".container");
+const loadingText = document.querySelector(".loading-text");
+const canvas = document.createElement("canvas");
+document.body.appendChild(canvas);
 
 // Scene
 const scene = new THREE.Scene();
@@ -17,10 +20,24 @@ const scene = new THREE.Scene();
 const fog = new THREE.Fog("#262837", 1, 23);
 scene.fog = fog;
 
+// Loading
+const loadingManager = new THREE.LoadingManager();
+
+loadingManager.onProgress = (url, loaded, total) => {
+  const load = 1 - scale((loaded / total) * 100, 0, 100, 1, 0);
+
+  loadingText.innerHTML = `${Math.trunc(load * 100)}%`;
+  container.style.backgroundColor = `rgba(0,0,0,${1 - load})`;
+};
+
+loadingManager.onLoad = () => {
+  container.style.display = "none";
+};
+
 /**
  * Textures
  */
-const textureLoader = new THREE.TextureLoader();
+const textureLoader = new THREE.TextureLoader(loadingManager);
 
 const doorColorTexture = textureLoader.load("/textures/door/color.jpg");
 const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg");
@@ -342,3 +359,8 @@ window.addEventListener("resize", () => {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
+
+// utils
+function scale(num, in_min, in_max, out_min, out_max) {
+  return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+}
