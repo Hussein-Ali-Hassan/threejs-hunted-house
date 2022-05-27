@@ -190,6 +190,7 @@ const floor = new THREE.Mesh(
     aoMap: grassAmbientOcclusionTexture,
     normalMap: grassNormalTexture,
     roughnessMap: grassRoughnessTexture,
+    side: THREE.DoubleSide
   })
 );
 floor.geometry.setAttribute(
@@ -197,7 +198,7 @@ floor.geometry.setAttribute(
   new THREE.Float32BufferAttribute(floor.geometry.attributes.uv.array, 2)
 );
 floor.rotation.x = -Math.PI * 0.5;
-floor.position.y = 0;
+floor.position.y = -0.01;
 floor.receiveShadow = true;
 scene.add(floor);
 
